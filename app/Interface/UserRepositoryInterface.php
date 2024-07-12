@@ -2,7 +2,7 @@
 
 namespace App\Interface;
 
-interface TaskRepositoryInterface
+interface UserRepositoryInterface
 {
     public function all();
     public function create(array $data);

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\TaskService;
+use App\Services\UserService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class TaskController extends Controller
+class UserController extends Controller
 {
 
     public function __construct(
-        protected TaskService $taskService
+        protected UserService $userService
     ) {
     }
 
@@ -20,12 +20,12 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = $this->taskService->all();
+        $users = $this->userService->all();
         
         return response()->json([
             'success' => true,
-            'data' => $tasks,
-            'message' => 'All tasks retrivied.'
+            'data' => $users,
+            'message' => 'All users retrivied.'
         ], Response::HTTP_OK);
     }
 
@@ -36,15 +36,16 @@ class TaskController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:144',
-            'status' => 'required|numeric'
+            'nickname' => 'required|string|max:20',
+            'email' => 'required|string|max:100',
         ]);
 
-        $task = $this->taskService->create($data);
+        $user = $this->userService->create($data);
 
         return response()->json([
             'success' => true,
-            'data' => $task,
-            'message' => 'Task created.'
+            'data' => $user,
+            'message' => 'user created.'
         ], Response::HTTP_CREATED);
     }
 
@@ -53,11 +54,11 @@ class TaskController extends Controller
      */
     public function show(int $id)
     {
-        $task = $this->taskService->find($id);
+        $user = $this->userService->find($id);
         return response()->json([
             'success' => true,
-            'data' => $task,
-            'message' => 'Task found.'
+            'data' => $user,
+            'message' => 'user found.'
         ], Response::HTTP_OK);
     }
 
@@ -67,16 +68,17 @@ class TaskController extends Controller
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:144',
-            'status' => 'required|numeric'
+            'name' => 'string|max:144',
+            'nickname' => 'required|string|max:20',
+            'email' => 'required|string|max:100',
         ]);
 
-        $task = $this->taskService->update($data, $id);
+        $user = $this->userService->update($data, $id);
 
         return response()->json([
             'success' => true,
-            'data' => $task,
-            'message' => 'Task updated.'
+            'data' => $user,
+            'message' => 'user updated.'
         ], Response::HTTP_OK);
     }
 
@@ -85,7 +87,7 @@ class TaskController extends Controller
      */
     public function destroy(int $id)
     {
-        $this->taskService->delete($id);
+        $this->userService->delete($id);
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
