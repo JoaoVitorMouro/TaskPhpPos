@@ -14,7 +14,7 @@
 
     No aplicativo é possível adicionar varios usuarios e cada usuário será responsável pelo sua lista de suas transações e também cada usuário tera acesso a um resumo de todas as transações(entradas e saidas) para auxiliar o acompanhamento de seus gastos.
 
-## :rocket: Tecnologias utilizadas
+## 🚀 Tecnologias utilizadas
 
 O projeto foi desenvolvido utilizando as seguintes tecnologias
 
@@ -24,7 +24,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias
 
 ---
 
-## :dividers: Como baixar o projeto
+## 🗂 Como baixar o projeto
 
 ```bash
 
