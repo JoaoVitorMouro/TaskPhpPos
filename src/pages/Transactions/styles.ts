@@ -37,3 +37,36 @@ export const PriceHighLight = styled.span<PriceHighLightProps>`
       ? props.theme['green-300']
       : props.theme['red-300']};
 `
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+`
+
+export const EditButton = styled.button`
+  background: transparent;
+  border: 0;
+  line-height: 0;
+  cursor: pointer;
+  color: ${(props) => props.theme['green-500']};
+
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.8);
+  }
+`
+
+export const DeleteButton = styled.button`
+  background: transparent;
+  border: 0;
+  line-height: 0;
+  cursor: pointer;
+  color: ${(props) => props.theme['red-500']};
+
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.8);
+  }
+`

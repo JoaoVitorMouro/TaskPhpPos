@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { api } from '../lib/axios'
-import { createContext } from 'use-context-selector'
+import { createContext, useContextSelector } from 'use-context-selector'
+import { UsersContext } from './UsersContext'
 
 interface TransactionsContextProps {
   children: ReactNode
@@ -34,7 +35,9 @@ interface UpdateTransactionProps {
 }
 
 interface TransactionsContextType {
+  transaction: TransactionsProps | undefined
   transactions: TransactionsProps[]
+  selectTransaction: (transactionId?: number) => void
   fetchTransactions: (query?: string) => Promise<void>
   createTransaction: (data: CreateTransactionProps) => Promise<void>
   updateTransaction: (data: UpdateTransactionProps) => Promise<void>
@@ -44,14 +47,13 @@ interface TransactionsContextType {
 export const TransactionsContext = createContext({} as TransactionsContextType)
 
 export function TransactionsProvider({ children }: TransactionsContextProps) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const user = {
-    id: 1,
-    name: 'John Doe',
-    email: 'johnDoe@teste.com',
-    createdAt: new Date().toISOString(),
-  }
+  const user = useContextSelector(UsersContext, (context) => {
+    return context.user
+  })
 
+  const [transaction, setTransaction] = useState<TransactionsProps | undefined>(
+    undefined,
+  )
   const [transactions, setTransactions] = useState<TransactionsProps[]>([
     {
       id: 0,
@@ -73,16 +75,26 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
     },
   ])
 
+  const selectTransaction = (transactionId?: number) => {
+    const selectedTransaction = transactions.find(
+      (transaction) => transaction.id === transactionId,
+    )
+
+    setTransaction(selectedTransaction)
+  }
+
   const fetchTransactions = useCallback(
     async (query?: string) => {
-      const response = await api.get('/api/transactions', {
-        params: {
-          q: query,
-          userId: user?.id,
+      const response = await api.get(
+        `/api/transactions/${user?.id}/userTransactions`,
+        {
+          params: {
+            q: query,
+          },
         },
-      })
+      )
 
-      setTransactions(response.data)
+      setTransactions(response.data.data)
     },
     [user],
   )
@@ -100,7 +112,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
         createdAt: new Date(),
       })
 
-      setTransactions((state) => [response.data, ...state])
+      setTransactions((state) => [response.data.data, ...state])
     },
     [user?.id],
   )
@@ -110,6 +122,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
       const { category, description, price, type } = data
 
       const response = await api.post(`/api/transactions/${data.id}`, {
+        id: data.id,
         category,
         description,
         price,
@@ -121,7 +134,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
       setTransactions((state) => {
         return state.map((transaction) => {
           if (transaction.id === data.id) {
-            return response.data
+            return response.data.data
           }
 
           return transaction
@@ -131,18 +144,13 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
     [user?.id],
   )
 
-  const deleteTransaction = useCallback(
-    async (transactionId: number) => {
-      await api.post(`/api/transactions/${transactionId}`, {
-        userId: user?.id,
-      })
+  const deleteTransaction = useCallback(async (transactionId: number) => {
+    await api.delete(`/api/transactions/${transactionId}`)
 
-      setTransactions((state) => {
-        return state.filter((transaction) => transaction.id !== transactionId)
-      })
-    },
-    [user?.id],
-  )
+    setTransactions((state) => {
+      return state.filter((transaction) => transaction.id !== transactionId)
+    })
+  }, [])
 
   useEffect(() => {
     fetchTransactions()
@@ -151,7 +159,9 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
   return (
     <TransactionsContext.Provider
       value={{
+        transaction,
         transactions,
+        selectTransaction,
         fetchTransactions,
         createTransaction,
         updateTransaction,

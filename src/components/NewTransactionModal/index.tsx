@@ -25,12 +25,15 @@ const newTransactionFromSchema = z.object({
 type NewTransactionFormInputs = z.infer<typeof newTransactionFromSchema>
 
 export function NewTransactionModal() {
-  const createTransaction = useContextSelector(
-    TransactionsContext,
-    (context) => {
-      return context.createTransaction
-    },
-  )
+  const [transaction, selectTransaction, createTransaction, updateTransaction] =
+    useContextSelector(TransactionsContext, (context) => {
+      return [
+        context.transaction,
+        context.selectTransaction,
+        context.createTransaction,
+        context.updateTransaction,
+      ]
+    })
   const {
     control,
     register,
@@ -40,13 +43,23 @@ export function NewTransactionModal() {
   } = useForm<NewTransactionFormInputs>({
     resolver: zodResolver(newTransactionFromSchema),
     defaultValues: {
-      type: 'income',
+      category: transaction?.category,
+      description: transaction?.description,
+      price: transaction?.price,
+      type: transaction?.type,
     },
   })
 
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    await createTransaction(data)
-    reset()
+    if (transaction) {
+      await updateTransaction({ id: transaction.id, ...data })
+      reset()
+    } else {
+      await createTransaction(data)
+      reset()
+    }
+
+    selectTransaction(undefined)
   }
 
   return (
@@ -56,7 +69,12 @@ export function NewTransactionModal() {
       <Content>
         <Dialog.Title>Nova Transação</Dialog.Title>
 
-        <CloseButton>
+        <CloseButton
+          type="button"
+          onClick={() => {
+            transaction ? selectTransaction(undefined) : reset()
+          }}
+        >
           <X size={24} />
         </CloseButton>
 
