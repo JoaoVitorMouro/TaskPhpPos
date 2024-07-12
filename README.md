@@ -10,9 +10,8 @@
 
 ## :bookmark:&nbsp; Sobre
 
-    MyFc é um aplicativo web que foi desenvolvido com o objetivo de realizar o controle das finanças das pessoas que tem problemas no gerenciamento de gastos.
-
-    No aplicativo é possível adicionar varios usuarios e cada usuário será responsável pelo sua lista de suas transações e também cada usuário tera acesso a um resumo de todas as transações(entradas e saidas) para auxiliar o acompanhamento de seus gastos.
+MyFc é um aplicativo web que foi desenvolvido com o objetivo de realizar o controle das finanças das pessoas que tem problemas no gerenciamento de gastos.
+No aplicativo é possível adicionar varios usuarios e cada usuário será responsável pelo sua lista de suas transações e também cada usuário tera acesso a um resumo de todas as transações(entradas e saidas) para auxiliar o acompanhamento de seus gastos.
 
 ## 🚀 Tecnologias utilizadas
 
