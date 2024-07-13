@@ -13,7 +13,7 @@ interface TransactionsProps {
   category: string
   type: 'income' | 'outcome'
   price: number
-  userId: number
+  user_id: number
   createdAt: string
 }
 
@@ -22,7 +22,7 @@ interface CreateTransactionProps {
   category: string
   type: 'income' | 'outcome'
   price: number
-  userId: number
+  user_id: number
 }
 
 interface UpdateTransactionProps {
@@ -31,7 +31,7 @@ interface UpdateTransactionProps {
   category: string
   type: 'income' | 'outcome'
   price: number
-  userId: number
+  user_id: number
 }
 
 interface TransactionsContextType {
@@ -61,7 +61,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
       category: 'Dev',
       type: 'income',
       price: 100,
-      userId: 1,
+      user_id: 1,
       createdAt: new Date().toISOString(),
     },
     {
@@ -70,7 +70,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
       category: 'Stream',
       type: 'outcome',
       price: 20,
-      userId: 1,
+      user_id: 1,
       createdAt: new Date().toISOString(),
     },
   ])
@@ -85,8 +85,9 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
 
   const fetchTransactions = useCallback(
     async (query?: string) => {
+      if (!user) return
       const response = await api.get(
-        `/api/transactions/${user?.id}/userTransactions`,
+        `/api/transactions/${user?.id}/usertransactions`,
         {
           params: {
             q: query,
@@ -108,7 +109,7 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
         description,
         price,
         type,
-        userId: user?.id,
+        user_id: user?.id,
         createdAt: new Date(),
       })
 
@@ -121,13 +122,13 @@ export function TransactionsProvider({ children }: TransactionsContextProps) {
     async (data: UpdateTransactionProps) => {
       const { category, description, price, type } = data
 
-      const response = await api.post(`/api/transactions/${data.id}`, {
+      const response = await api.put(`/api/transactions/${data.id}`, {
         id: data.id,
         category,
         description,
         price,
         type,
-        userId: user?.id,
+        user_id: user?.id,
         createdAt: new Date(),
       })
 

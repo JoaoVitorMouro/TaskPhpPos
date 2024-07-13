@@ -13,13 +13,14 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContextSelector } from 'use-context-selector'
 import { TransactionsContext } from '../../contexts/TransactionsContext'
+import { UsersContext } from '../../contexts/UsersContext'
 
 const newTransactionFromSchema = z.object({
   description: z.string(),
   price: z.number(),
   category: z.string(),
   type: z.enum(['income', 'outcome']),
-  userId: z.number(),
+  user_id: z.number(),
 })
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionFromSchema>
@@ -34,6 +35,13 @@ export function NewTransactionModal() {
         context.updateTransaction,
       ]
     })
+
+  console.log(transaction)
+
+  const user = useContextSelector(UsersContext, (context) => {
+    return context.user
+  })
+
   const {
     control,
     register,
@@ -47,6 +55,7 @@ export function NewTransactionModal() {
       description: transaction?.description,
       price: transaction?.price,
       type: transaction?.type,
+      user_id: user?.id,
     },
   })
 
@@ -67,7 +76,9 @@ export function NewTransactionModal() {
       <Overlay />
 
       <Content>
-        <Dialog.Title>Nova Transação</Dialog.Title>
+        <Dialog.Title>
+          {transaction ? 'Editar Transação' : 'Nova Transação'}
+        </Dialog.Title>
 
         <CloseButton
           type="button"
@@ -81,19 +92,19 @@ export function NewTransactionModal() {
         <form onSubmit={handleSubmit(handleCreateNewTransaction)}>
           <input
             type="text"
-            placeholder="Descrição"
+            placeholder={transaction ? transaction.description : 'Descrição'}
             required
             {...register('description')}
           />
           <input
             type="number"
-            placeholder="Preço"
+            placeholder={transaction ? String(transaction.price) : 'Preço'}
             required
             {...register('price', { valueAsNumber: true })}
           />
           <input
             type="text"
-            placeholder="Categoria"
+            placeholder={transaction ? transaction.category : 'Categoria'}
             required
             {...register('category')}
           />
@@ -120,7 +131,7 @@ export function NewTransactionModal() {
           />
 
           <button type="submit" disabled={isSubmitting}>
-            Cadastrar
+            {transaction ? 'Salvar' : 'Cadastrar'}
           </button>
         </form>
       </Content>

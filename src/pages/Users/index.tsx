@@ -24,13 +24,13 @@ export function Users() {
 
   const navigation = useNavigate()
 
-  const handleSelectUser = (userId: number) => {
-    selectUser(userId)
+  const handleSelectUser = (user_id: number) => {
+    selectUser(user_id)
     navigation('/transactions')
   }
 
-  const handleDeleteUser = async (userId: number) => {
-    await deleteUser(userId)
+  const handleDeleteUser = async (user_id: number) => {
+    await deleteUser(user_id)
   }
 
   return (
@@ -42,7 +42,6 @@ export function Users() {
             <tr key={user.id}>
               <td width="50%">{user.name}</td>
               <td>{user.email}</td>
-              <td>{dateFormatter.format(new Date(user.createdAt))}</td>
               <td>
                 <ButtonsContainer>
                   <TransactionsButton

@@ -9,7 +9,7 @@ import {
   TransactionsTable,
 } from './styles'
 import { TransactionsContext } from '../../contexts/TransactionsContext'
-import { dateFormatter, priceFormatter } from '../../utils/formatter'
+import { priceFormatter } from '../../utils/formatter'
 import { useContextSelector } from 'use-context-selector'
 import { Pencil, Trash } from 'phosphor-react'
 import { NewTransactionModal } from '../../components/NewTransactionModal'
@@ -43,7 +43,6 @@ export function Transactions() {
                 </PriceHighLight>
               </td>
               <td>{transaction.type}</td>
-              <td>{dateFormatter.format(new Date(transaction.createdAt))}</td>
               <td>
                 <ButtonsContainer>
                   <Dialog.Root>
